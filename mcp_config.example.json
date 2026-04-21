@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "storyforge": {
+            "command": "python",
+            "args": [
+                "PATH/TO/YOUR/storyforge-agent/src/mcp_server.py",
+                "--stdio"
+            ],
+            "env": {
+                "TAVILY_API_KEY": "YOUR_TAVILY_API_KEY",
+                "GROQ_API_KEY": "YOUR_GROQ_API_KEY"
+            }
+        }
+    }
+}
