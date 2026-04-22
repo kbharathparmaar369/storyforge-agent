@@ -4,6 +4,12 @@ import os
 from dotenv import load_dotenv
 from tavily import TavilyClient
 from groq import Groq
+from utils import (
+    validate_search_results,
+    validate_script_output,
+    retry_with_backoff,
+    get_friendly_error
+)
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
@@ -106,8 +112,8 @@ def generate_video_script(
 
         },
         "instagram_reels":{
-            "duration": "30 seconds",
-            "words": "80-100 words",
+            "duration": "60 seconds",
+            "words": "180-200 words",
             "name": "Instagram Reels"
         }
     }
@@ -126,19 +132,20 @@ def generate_video_script(
     prompt = f"""You are a viral short-form video script writer with 10 years experience writing for top YouTube creators.
 
 Your scripts always follow this PROVEN structure:
-1. HOOK (first 3 seconds): Start with a shocking fact, question, or bold statement that stops the scroll
-2. CONTEXT (5 seconds): One sentence explaining why this matters RIGHT NOW
-3. MAIN CONTENT (40 seconds): 3 punchy points, each explained in 1-2 sentences max
-4. CALL TO ACTION (5 seconds): Simple, specific action for viewer to take
+1. HOOK (first 5 seconds): Start with a shocking fact, question, or bold statement that stops the scroll. Make it UNBELIEVABLE.
+2. CONTEXT (5 seconds): Explain why this matters RIGHT NOW.
+3. MAIN CONTENT (45 seconds): 5 punchy points, each explained in 2-3 detailed sentences. Provide depth and value.
+4. CALL TO ACTION (5 seconds): Simple, specific action for viewer to take.
 
 STRICT RULES:
-- Every sentence must be short — maximum 12 words
-- No bullet points, no headers, no stage directions
-- No words like "firstly", "furthermore", "in conclusion"
-- Write exactly how a human speaks out loud
-- Use "you" and "we" to talk directly to viewer
-- Each point must flow naturally into the next
-- Platform: {config['name']} ({config['duration']}, {config['words']})
+- Aim for a word count of exactly {config['words']}.
+- Every sentence must be punchy — maximum 15 words.
+- No bullet points, no headers, no stage directions.
+- No words like "firstly", "furthermore", "in conclusion".
+- Write exactly how a human speaks out loud.
+- Use "you" and "we" to talk directly to viewer.
+- Each point must flow naturally into the next.
+- Platform: {config['name']} ({config['duration']})
 - Tone: {tone_desc}
 - Output ONLY the spoken script — nothing else, no labels, no sections
 

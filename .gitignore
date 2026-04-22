@@ -2,6 +2,11 @@ venv/
 .env
 __pycache__/
 *.pyc
+*.pyo
 .DS_Store
+*.egg-info/
+dist/
+build/
+.pytest_cache/
 mcp_config.json
 src/mcp_config.json
