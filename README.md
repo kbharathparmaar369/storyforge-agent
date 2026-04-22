@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ## 🌐 Live Demo
-👉 **[Try it here](https://storyforge-agent.streamlit.app)**
+👉 **[Try it here](https://storyforge-agent-myproject.streamlit.app/)**
 
 ---
 
