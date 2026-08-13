@@ -214,9 +214,8 @@ Write the script now:"""
             max_tokens=500
         )
 
-        script=response.choices[0].message.content.strip()
-
-        word_count=len(script.split())
+        script = (response.choices[0].message.content or "").strip()
+        word_count = len(script.split()) if script else 0
 
         title_response=groq_client.chat.completions.create(
             model=GROQ_MODEL,
@@ -229,7 +228,7 @@ Write the script now:"""
             temperature=0.9,
             max_tokens=120
         )
-        titles=title_response.choices[0].message.content.strip()
+        titles = (title_response.choices[0].message.content or "").strip()
        
         hashtag_response=groq_client.chat.completions.create(
             model=GROQ_MODEL,
@@ -247,7 +246,7 @@ Write the script now:"""
                 temperature=0.6,
                 max_tokens=100
         )
-        hashtags=hashtag_response.choices[0].message.content.strip()
+        hashtags = (hashtag_response.choices[0].message.content or "").strip()
 
         print(f"Scripts generated ! ({word_count} words)")
         return {

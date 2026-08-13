@@ -54,7 +54,7 @@ def validate_script_output(script_data: dict) -> tuple[bool, str]:
     if script_data.get("error"):
         return False, f"Script generation error: {script_data['error']}"
 
-    script = script_data.get("script", "")
+    script = script_data.get("script") or ""
 
     if not script or script == "Script generation failed.":
         return False, "Script generation failed. Please try again."
