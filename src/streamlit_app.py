@@ -6,7 +6,6 @@ from datetime import datetime
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
 
-# Ensure src directory is in sys.path
 src_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.join(os.getcwd(), "src")
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
@@ -16,7 +15,6 @@ try:
 except ImportError:
     from src.app import run_pipeline
 
-# ── Page config ──────────────────────────────────────────
 st.set_page_config(
     page_title="StoryForge Agent",
     page_icon="🎬",
@@ -24,7 +22,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── Custom CSS ────────────────────────────────────────────
 st.markdown("""
 <style>
     .stApp { background-color: #0a0a0f; color: #e2e8f0; }
@@ -123,13 +120,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Initialize session state ──────────────────────────────
 if "history" not in st.session_state:
     st.session_state.history = []
 if "current_result" not in st.session_state:
     st.session_state.current_result = None
 
-# ── Sidebar — Script History ──────────────────────────────
 with st.sidebar:
     st.markdown("### 📚 Script History")
     st.caption(f"{len(st.session_state.history)} scripts generated")
@@ -137,7 +132,6 @@ with st.sidebar:
     if not st.session_state.history:
         st.info("No scripts yet. Generate your first one!")
     else:
-        # Clear history button
         if st.button("Clear History", use_container_width=True):
             st.session_state.history = []
             st.session_state.current_result = None
@@ -145,7 +139,6 @@ with st.sidebar:
 
         st.divider()
 
-        # Show history cards
         for i, item in enumerate(reversed(st.session_state.history)):
             with st.container():
                 st.markdown(f"""
@@ -163,13 +156,11 @@ with st.sidebar:
                     st.session_state.current_result = item["result"]
                     st.rerun()
 
-# ── Main Area ─────────────────────────────────────────────
 st.markdown('<div class="main-title">StoryForge Agent</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">AI-powered YouTube Shorts & Instagram Reels script generator</div>', unsafe_allow_html=True)
 
 st.divider()
 
-# ── Input Section ─────────────────────────────────────────
 st.markdown("### What is your video about?")
 
 topic = st.text_input(
@@ -203,7 +194,6 @@ with col3:
     st.markdown("<br>", unsafe_allow_html=True)
     generate_clicked = st.button("Generate Script", use_container_width=True)
 
-# ── Generation Logic ──────────────────────────────────────
 if generate_clicked:
     if not topic.strip():
         st.error("Please enter a topic first!")
@@ -231,7 +221,6 @@ if generate_clicked:
                     "error": err_detail
                 }
 
-            # Save to history
             st.session_state.history.append({
                 "topic": topic.strip(),
                 "platform": platform,
@@ -243,7 +232,6 @@ if generate_clicked:
             st.session_state.current_result = result
             st.rerun()
 
-# ── Results ───────────────────────────────────────────────
 if st.session_state.current_result:
     result = st.session_state.current_result
 
@@ -253,7 +241,6 @@ if st.session_state.current_result:
     else:
         st.success("Script generated successfully!")
 
-    # Metrics
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Words", result.get("word_count", 0))
@@ -267,7 +254,6 @@ if st.session_state.current_result:
 
     st.divider()
 
-    # Two column layout for script + details
     left, right = st.columns([3, 2])
 
     with left:
@@ -277,7 +263,6 @@ if st.session_state.current_result:
             unsafe_allow_html=True
         )
 
-        # Download
         sources_list = result.get('sources') or []
         script_text = f"""STORYFORGE AGENT - Generated Script
 =====================================
@@ -306,13 +291,12 @@ SOURCES:
         st.download_button(
             label="Download Script (.txt)",
             data=script_text.encode('utf-8'),
-            file_name=f"storyforge_{str(result.get('topic','script')).replace(' ', '_')}.txt",
+            file_name=f"storyforge_{str(result.get('topic', 'script')).replace(' ', '_')}.txt",
             mime="text/plain",
             use_container_width=True
         )
 
     with right:
-        # Titles
         st.markdown("### Suggested Titles")
         titles_raw = result.get("titles") or ""
         titles = titles_raw.split("\n") if isinstance(titles_raw, str) else []
@@ -320,17 +304,14 @@ SOURCES:
             if title and title.strip():
                 st.info(title.strip())
 
-        # Hashtags
         st.markdown("### Hashtags")
         st.code(result.get("hashtags") or "", language=None)
 
-        # Sources
         st.markdown("### Sources Used")
         for url in (result.get("sources") or []):
             if url:
                 st.markdown(f"- [{url[:50]}...]({url})")
 
-        # Research summary
         with st.expander("View Research Summary"):
             st.write(result.get("search_summary") or "")
 
