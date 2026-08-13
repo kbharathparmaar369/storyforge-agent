@@ -215,30 +215,42 @@ if generate_clicked:
                     platform=platform,
                     tone=tone
                 )
-
-                # Save to history
-                st.session_state.history.append({
+            except Exception as e:
+                err_detail = f"{type(e).__name__}: {str(e)}" if str(e) else type(e).__name__
+                result = {
                     "topic": topic.strip(),
                     "platform": platform,
                     "tone": tone,
-                    "timestamp": datetime.now().strftime("%b %d, %H:%M"),
-                    "result": result
-                })
+                    "script": "Script generation failed.",
+                    "word_count": 0,
+                    "estimated_duration": "0 seconds",
+                    "titles": "",
+                    "hashtags": "",
+                    "sources": [],
+                    "search_summary": "",
+                    "error": err_detail
+                }
 
-                st.session_state.current_result = result
-                st.rerun()
+            # Save to history
+            st.session_state.history.append({
+                "topic": topic.strip(),
+                "platform": platform,
+                "tone": tone,
+                "timestamp": datetime.now().strftime("%b %d, %H:%M"),
+                "result": result
+            })
 
-            except Exception as e:
-                st.error(f"Something went wrong: {str(e)}")
+            st.session_state.current_result = result
+            st.rerun()
 
 # ── Results ───────────────────────────────────────────────
 if st.session_state.current_result:
     result = st.session_state.current_result
 
     if result.get("error") or result.get("script") == "Script generation failed.":
-        error_msg = result.get("error") or "Unknown API error"
+        error_msg = result.get("error") or "Script generation encountered an issue. Check your GROQ_API_KEY and TAVILY_API_KEY."
         st.error(f"⚠️ Script Generation Error: {error_msg}")
-        if "API key" in error_msg or "missing" in error_msg.lower() or "401" in error_msg or "auth" in error_msg.lower():
+        if "API key" in error_msg or "missing" in error_msg.lower() or "401" in error_msg or "auth" in error_msg.lower() or "ValueError" in error_msg:
             st.info("💡 **Streamlit Cloud Deployment Tip:** Make sure your `GROQ_API_KEY` and `TAVILY_API_KEY` are configured in **App Settings → Secrets** on Streamlit Cloud.")
     else:
         st.success("Script generated successfully!")
