@@ -227,7 +227,13 @@ if generate_clicked:
 if st.session_state.current_result:
     result = st.session_state.current_result
 
-    st.success("Script generated successfully!")
+    if result.get("error") or result.get("script") == "Script generation failed.":
+        error_msg = result.get("error") or "Unknown API error"
+        st.error(f"⚠️ Script Generation Error: {error_msg}")
+        if "API key" in error_msg or "missing" in error_msg.lower() or "401" in error_msg or "auth" in error_msg.lower():
+            st.info("💡 **Streamlit Cloud Deployment Tip:** Make sure your `GROQ_API_KEY` and `TAVILY_API_KEY` are configured in **App Settings → Secrets** on Streamlit Cloud.")
+    else:
+        st.success("Script generated successfully!")
 
     # Metrics
     col1, col2, col3, col4 = st.columns(4)

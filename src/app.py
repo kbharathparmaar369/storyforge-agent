@@ -14,15 +14,38 @@ from utils import (
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
 load_dotenv()
-tavily_client=TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
-groq_client=Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-GROQ_MODEL="llama-3.3-70b-versatile"
+GROQ_MODEL = "llama-3.3-70b-versatile"
+
+def get_tavily_client():
+    key = os.getenv("TAVILY_API_KEY")
+    if not key:
+        try:
+            import streamlit as st
+            key = st.secrets.get("TAVILY_API_KEY")
+        except Exception:
+            pass
+    if not key:
+        raise ValueError("TAVILY_API_KEY is missing. Please set TAVILY_API_KEY in your .env file or Streamlit Secrets.")
+    return TavilyClient(api_key=key)
+
+def get_groq_client():
+    key = os.getenv("GROQ_API_KEY")
+    if not key:
+        try:
+            import streamlit as st
+            key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            pass
+    if not key:
+        raise ValueError("GROQ_API_KEY is missing. Please set GROQ_API_KEY in your .env file or Streamlit Secrets.")
+    return Groq(api_key=key)
 
 def get_realtime_info(query : str) -> dict:
     
     #search the web for real time information on a given topic.repr
     try:
+        tavily_client = get_tavily_client()
         response = tavily_client.search(
         query=query,
         search_depth="advanced",
@@ -157,6 +180,7 @@ TOPIC: {topic}
 Write the script now:"""
 
     try:
+        groq_client = get_groq_client()
         print(f"\n Generating {config['name']} script ({tone} tone) ...")
 
         response=groq_client.chat.completions.create(
@@ -262,7 +286,8 @@ def run_pipeline(
         "titles":script_data.get("titles"),
         "hashtags":script_data.get("hashtags"),
         "sources":[r["url"] for r in search_data.get("results",[])],
-        "search_summary":search_data.get("answer")        
+        "search_summary":search_data.get("answer"),
+        "error": script_data.get("error") or search_data.get("error")
         }
     
     print("\n Pipeline compeleted !")
