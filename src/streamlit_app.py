@@ -254,34 +254,35 @@ if st.session_state.current_result:
         )
 
         # Download
+        sources_list = result.get('sources') or []
         script_text = f"""STORYFORGE AGENT - Generated Script
 =====================================
-Topic: {result.get('topic')}
-Platform: {result.get('platform')}
-Tone: {result.get('tone')}
-Word Count: {result.get('word_count')}
-Estimated Duration: {result.get('estimated_duration')}
+Topic: {result.get('topic', '')}
+Platform: {result.get('platform', '')}
+Tone: {result.get('tone', '')}
+Word Count: {result.get('word_count', 0)}
+Estimated Duration: {result.get('estimated_duration', '')}
 
 SCRIPT:
 -------
-{result.get('script')}
+{result.get('script', '')}
 
 SUGGESTED TITLES:
 -----------------
-{result.get('titles')}
+{result.get('titles', '')}
 
 HASHTAGS:
 ---------
-{result.get('hashtags')}
+{result.get('hashtags', '')}
 
 SOURCES:
 --------
-{chr(10).join(result.get('sources', []))}
+{chr(10).join(sources_list)}
 """
         st.download_button(
             label="Download Script (.txt)",
             data=script_text.encode('utf-8'),
-            file_name=f"storyforge_{result.get('topic','script').replace(' ', '_')}.txt",
+            file_name=f"storyforge_{str(result.get('topic','script')).replace(' ', '_')}.txt",
             mime="text/plain",
             use_container_width=True
         )
@@ -289,24 +290,25 @@ SOURCES:
     with right:
         # Titles
         st.markdown("### Suggested Titles")
-        titles = result.get("titles", "").split("\n")
+        titles_raw = result.get("titles") or ""
+        titles = titles_raw.split("\n") if isinstance(titles_raw, str) else []
         for title in titles:
-            if title.strip():
+            if title and title.strip():
                 st.info(title.strip())
 
         # Hashtags
         st.markdown("### Hashtags")
-        st.code(result.get("hashtags", ""), language=None)
+        st.code(result.get("hashtags") or "", language=None)
 
         # Sources
         st.markdown("### Sources Used")
-        for url in result.get("sources", []):
+        for url in (result.get("sources") or []):
             if url:
                 st.markdown(f"- [{url[:50]}...]({url})")
 
         # Research summary
         with st.expander("View Research Summary"):
-            st.write(result.get("search_summary", ""))
+            st.write(result.get("search_summary") or "")
 
     st.divider()
     st.caption("Built with Groq + Tavily + Streamlit + FastMCP")
