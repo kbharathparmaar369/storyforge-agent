@@ -1,18 +1,32 @@
-from sys import platform
-from re import search
 import os
-from dotenv import load_dotenv
-from tavily import TavilyClient
-from groq import Groq
-from utils import (
-    validate_search_results,
-    validate_script_output,
-    retry_with_backoff,
-    get_friendly_error
-)
+import sys
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
+
+# Ensure src directory is in sys.path
+src_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.join(os.getcwd(), "src")
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+
+from dotenv import load_dotenv
+from tavily import TavilyClient
+from groq import Groq
+
+try:
+    from utils import (
+        validate_search_results,
+        validate_script_output,
+        retry_with_backoff,
+        get_friendly_error
+    )
+except ImportError:
+    from src.utils import (
+        validate_search_results,
+        validate_script_output,
+        retry_with_backoff,
+        get_friendly_error
+    )
 load_dotenv()
 
 GROQ_MODEL = "llama-3.3-70b-versatile"

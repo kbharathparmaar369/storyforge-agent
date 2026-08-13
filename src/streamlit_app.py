@@ -2,11 +2,19 @@ import streamlit as st
 import sys
 import os
 from datetime import datetime
+
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
 
-sys.path.append(os.path.dirname(__file__))
-from app import run_pipeline
+# Ensure src directory is in sys.path
+src_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.join(os.getcwd(), "src")
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+
+try:
+    from app import run_pipeline
+except ImportError:
+    from src.app import run_pipeline
 
 # ── Page config ──────────────────────────────────────────
 st.set_page_config(
