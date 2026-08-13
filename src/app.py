@@ -91,12 +91,13 @@ def get_realtime_info(query : str) -> dict:
         }
 
     except Exception as e:
+        err_str = f"{type(e).__name__}: {str(e)}" if str(e) else type(e).__name__
         return {
             "query": query,
             "answer": "Search failed",
             "results": [],
             "total_results": 0,
-            "error": str(e)
+            "error": err_str
         }
 
 # 2 : function format search results
@@ -248,11 +249,12 @@ Write the script now:"""
         }
 
     except Exception as e:
-        print(f" Script generation error: {e}")
+        err_str = f"{type(e).__name__}: {str(e)}" if str(e) else type(e).__name__
+        print(f" Script generation error: {err_str}")
         return {
             "script": "Script generation failed.",
             "word_count": 0,
-            "error": str(e)
+            "error": err_str
         }
 
 
@@ -263,35 +265,55 @@ def run_pipeline(
     platform: str="youtube_shorts",
     tone: str="educational"
 ) -> dict:
-    print(f"\n Starting StoryForge pipeline for: '{topic}'")
-    print("="*50)
+    try:
+        print(f"\n Starting StoryForge pipeline for: '{topic}'")
+        print("="*50)
 
-    search_data=get_realtime_info(topic)
-    info_text=format_search_results(search_data)
+        search_data=get_realtime_info(topic)
+        info_text=format_search_results(search_data)
 
-    script_data=generate_video_script(
-        info_text=info_text,
-        topic=topic,
-        platform=platform,
-        tone=tone
-    )
+        script_data=generate_video_script(
+            info_text=info_text,
+            topic=topic,
+            platform=platform,
+            tone=tone
+        )
 
-    result={
-        "topic":topic,
-        "platform":script_data.get("platform"),
-        "tone":tone,
-        "script":script_data.get("script"),
-        "word_count":script_data.get("word_count"),
-        "estimated_duration":script_data.get("estimated_duration"),
-        "titles":script_data.get("titles"),
-        "hashtags":script_data.get("hashtags"),
-        "sources":[r["url"] for r in search_data.get("results",[])],
-        "search_summary":search_data.get("answer"),
-        "error": script_data.get("error") or search_data.get("error")
+        error = script_data.get("error") or search_data.get("error")
+
+        result={
+            "topic":topic,
+            "platform":script_data.get("platform") or platform,
+            "tone":tone,
+            "script":script_data.get("script", "Script generation failed."),
+            "word_count":script_data.get("word_count", 0),
+            "estimated_duration":script_data.get("estimated_duration", "0 seconds"),
+            "titles":script_data.get("titles", ""),
+            "hashtags":script_data.get("hashtags", ""),
+            "sources":[r["url"] for r in search_data.get("results",[]) if isinstance(r, dict) and "url" in r],
+            "search_summary":search_data.get("answer", ""),
+            "error": error
         }
-    
-    print("\n Pipeline compeleted !")
-    return result
+        
+        print("\n Pipeline completed !")
+        return result
+
+    except Exception as e:
+        error_detail = f"{type(e).__name__}: {str(e)}" if str(e) else type(e).__name__
+        print(f"Pipeline error: {error_detail}")
+        return {
+            "topic": topic,
+            "platform": platform,
+            "tone": tone,
+            "script": "Script generation failed.",
+            "word_count": 0,
+            "estimated_duration": "0 seconds",
+            "titles": "",
+            "hashtags": "",
+            "sources": [],
+            "search_summary": "",
+            "error": error_detail
+        }
 
 # test block
 
