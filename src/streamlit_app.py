@@ -163,6 +163,16 @@ with st.sidebar:
                     st.session_state.current_result = item["result"]
                     st.rerun()
 
+    st.divider()
+    with st.expander("⚙️ API Key Settings", expanded=not bool(os.getenv("GROQ_API_KEY"))):
+        st.caption("Enter your free API keys if not configured in Streamlit Secrets:")
+        custom_groq = st.text_input("Groq API Key", type="password", placeholder="gsk_...", value=os.getenv("GROQ_API_KEY", ""))
+        custom_tavily = st.text_input("Tavily API Key", type="password", placeholder="tvly-...", value=os.getenv("TAVILY_API_KEY", ""))
+        if custom_groq.strip():
+            os.environ["GROQ_API_KEY"] = custom_groq.strip()
+        if custom_tavily.strip():
+            os.environ["TAVILY_API_KEY"] = custom_tavily.strip()
+
 # ── Main Area ─────────────────────────────────────────────
 st.markdown('<div class="main-title">StoryForge Agent</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">AI-powered YouTube Shorts & Instagram Reels script generator</div>', unsafe_allow_html=True)
