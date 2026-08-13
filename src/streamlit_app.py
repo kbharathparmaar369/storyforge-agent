@@ -163,16 +163,6 @@ with st.sidebar:
                     st.session_state.current_result = item["result"]
                     st.rerun()
 
-    st.divider()
-    with st.expander("⚙️ API Key Settings", expanded=not bool(os.getenv("GROQ_API_KEY"))):
-        st.caption("Enter your free API keys if not configured in Streamlit Secrets:")
-        custom_groq = st.text_input("Groq API Key", type="password", placeholder="gsk_...", value=os.getenv("GROQ_API_KEY", ""))
-        custom_tavily = st.text_input("Tavily API Key", type="password", placeholder="tvly-...", value=os.getenv("TAVILY_API_KEY", ""))
-        if custom_groq.strip():
-            os.environ["GROQ_API_KEY"] = custom_groq.strip()
-        if custom_tavily.strip():
-            os.environ["TAVILY_API_KEY"] = custom_tavily.strip()
-
 # ── Main Area ─────────────────────────────────────────────
 st.markdown('<div class="main-title">StoryForge Agent</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">AI-powered YouTube Shorts & Instagram Reels script generator</div>', unsafe_allow_html=True)
@@ -258,10 +248,8 @@ if st.session_state.current_result:
     result = st.session_state.current_result
 
     if result.get("error") or result.get("script") == "Script generation failed.":
-        error_msg = result.get("error") or "Script generation encountered an issue. Check your GROQ_API_KEY and TAVILY_API_KEY."
-        st.error(f"⚠️ Script Generation Error: {error_msg}")
-        if "API key" in error_msg or "missing" in error_msg.lower() or "401" in error_msg or "auth" in error_msg.lower() or "ValueError" in error_msg:
-            st.info("💡 **Streamlit Cloud Deployment Tip:** Make sure your `GROQ_API_KEY` and `TAVILY_API_KEY` are configured in **App Settings → Secrets** on Streamlit Cloud.")
+        error_msg = result.get("error") or "Script generation failed. Please try again."
+        st.error(f"⚠️ {error_msg}")
     else:
         st.success("Script generated successfully!")
 
