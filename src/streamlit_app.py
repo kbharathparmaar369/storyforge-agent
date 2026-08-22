@@ -1,6 +1,7 @@
 import streamlit as st
 import sys
 import os
+import html
 from datetime import datetime
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
@@ -141,9 +142,10 @@ with st.sidebar:
 
         for i, item in enumerate(reversed(st.session_state.history)):
             with st.container():
+                topic_esc = html.escape(str(item['topic']))
                 st.markdown(f"""
                 <div class="history-card">
-                    <div class="history-topic">{item['topic']}</div>
+                    <div class="history-topic">{topic_esc}</div>
                     <div class="history-meta">
                         <span class="badge badge-platform">{item['platform']}</span>
                         <span class="badge badge-tone">{item['tone']}</span>
@@ -249,7 +251,7 @@ if st.session_state.current_result:
     with col3:
         st.metric("Sources", len(result.get("sources", [])))
     with col4:
-        platform_display = "YT Shorts" if result.get("platform") == "YouTube Shorts" else "Reels"
+        platform_display = "YT Shorts" if "shorts" in str(result.get("platform", "")).lower() else "Reels"
         st.metric("Platform", platform_display)
 
     st.divider()
@@ -258,8 +260,9 @@ if st.session_state.current_result:
 
     with left:
         st.markdown("### Script")
+        script_display = html.escape(result.get("script", ""))
         st.markdown(
-            f'<div class="script-box">{result.get("script", "")}</div>',
+            f'<div class="script-box">{script_display}</div>',
             unsafe_allow_html=True
         )
 

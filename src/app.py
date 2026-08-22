@@ -215,7 +215,8 @@ Write the script now:"""
                 }
             ],
             temperature=0.7,
-            max_tokens=3000
+            max_tokens=3000,
+            extra_body={"reasoning_format": "hidden"}
         )
 
         script = (response.choices[0].message.content or "").strip()
@@ -230,7 +231,8 @@ Write the script now:"""
                 }
             ],
             temperature=0.9,
-            max_tokens=300
+            max_tokens=300,
+            extra_body={"reasoning_format": "hidden"}
         )
         titles = (title_response.choices[0].message.content or "").strip()
 
@@ -248,7 +250,8 @@ Write the script now:"""
                 }
             ],
             temperature=0.6,
-            max_tokens=300
+            max_tokens=300,
+            extra_body={"reasoning_format": "hidden"}
         )
         hashtags = (hashtag_response.choices[0].message.content or "").strip()
 
