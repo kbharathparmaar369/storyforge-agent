@@ -4,7 +4,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.45-red)](https://streamlit.io)
-[![Groq](https://img.shields.io/badge/Groq-LLaMA3-orange)](https://groq.com)
+[![Groq](https://img.shields.io/badge/Groq-GPT--OSS--20B-orange)](https://groq.com)
 [![FastMCP](https://img.shields.io/badge/FastMCP-2.3-purple)](https://fastmcp.com)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -45,7 +45,7 @@ Streamlit App               MCP Server (mcp_server.py)
 ┌────────────┴────────────┐
 ▼                         ▼
 Tavily API               Groq API
-(Real-time search)     (LLaMA 3.3 70B)
+(Real-time search)     (GPT-OSS 20B)
 ```
 
 ---
@@ -53,7 +53,7 @@ Tavily API               Groq API
 ## ✨ Features
 
 - 🔍 **Real-time research** — fetches latest web info on any topic instantly
-- 🤖 **Viral script generation** — LLaMA 3.3 70B via Groq with proven hook formula
+- 🤖 **Viral script generation** — GPT-OSS 20B via Groq with proven hook formula
 - 📱 **Multi-platform** — YouTube Shorts (60s) and Instagram Reels (60s)
 - 🎭 **4 tone modes** — Educational, Funny, Dramatic, Casual
 - 🎬 **Title suggestions** — 3 catchy viral titles per script
@@ -72,7 +72,7 @@ Tavily API               Groq API
 |------|---------|---------|
 | Python | 3.13 | Core language |
 | Streamlit | 1.45 | Web UI |
-| Groq API | 0.13 | LLM (LLaMA 3.3 70B) |
+| Groq API | 0.13 | LLM (GPT-OSS 20B - openai/gpt-oss-20b) |
 | Tavily API | 0.5 | Real-time web search |
 | FastMCP | 2.3 | MCP server framework |
 | Continue.dev | Latest | MCP client (VS Code) |
@@ -186,7 +186,7 @@ storyforge-agent/
 
 1. **User enters topic**
 2. **Tavily searches web** in real-time to fetch latest facts.
-3. **Groq LLaMA 3.3 70B** processes the research and generates a viral script using a proven 5-point structure (Hook, Context, Value, CTA).
+3. **Groq GPT-OSS 20B** processes the research and generates a viral script using a proven 5-point structure (Hook, Context, Value, CTA).
 4. **Catchy Titles & Hashtags** are generated to match the content.
 5. **Script is displayed** with options to download or view research sources.
 

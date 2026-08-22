@@ -4,6 +4,17 @@ import sys
 os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["PYTHONUTF8"] = "1"
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 src_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else os.path.join(os.getcwd(), "src")
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
@@ -28,7 +39,7 @@ except ImportError:
     )
 load_dotenv()
 
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 
 def get_tavily_client():
@@ -204,7 +215,7 @@ Write the script now:"""
                 }
             ],
             temperature=0.7,
-            max_tokens=500
+            max_tokens=3000
         )
 
         script = (response.choices[0].message.content or "").strip()
@@ -219,7 +230,7 @@ Write the script now:"""
                 }
             ],
             temperature=0.9,
-            max_tokens=120
+            max_tokens=300
         )
         titles = (title_response.choices[0].message.content or "").strip()
 
@@ -237,7 +248,7 @@ Write the script now:"""
                 }
             ],
             temperature=0.6,
-            max_tokens=100
+            max_tokens=300
         )
         hashtags = (hashtag_response.choices[0].message.content or "").strip()
 
